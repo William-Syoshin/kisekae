@@ -40,6 +40,12 @@ export default function CameraCapture() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
   const [selectedSession, setSelectedSession] = useState<Session | null>(null)
 
+  // デバッグ: モーダルstateの変更を監視
+  useEffect(() => {
+    console.log('🔍 selectedPhoto:', selectedPhoto)
+    console.log('🔍 selectedSession:', selectedSession)
+  }, [selectedPhoto, selectedSession])
+
   // メッセージを表示
   const showMessage = (text: string, type: 'success' | 'error' | 'info' = 'info') => {
     setMessage({ text, type })
@@ -992,6 +998,8 @@ Do not include any accessories, people, text, or decorations.`
                           key={photo.id} 
                           className="glass-morphism rounded-xl overflow-hidden neon-border hover:scale-105 transition-transform cursor-pointer"
                           onClick={() => {
+                            console.log('📷 写真クリック:', photo)
+                            console.log('👤 セッション:', photoSession)
                             setSelectedPhoto(photo)
                             setSelectedSession(photoSession || null)
                           }}
@@ -1105,6 +1113,8 @@ Do not include any accessories, people, text, or decorations.`
                               key={photo.id}
                               className="rounded-xl overflow-hidden neon-border-cyan transition-transform hover:scale-105 bg-black cursor-pointer"
                               onClick={() => {
+                                console.log('📷 ギャラリー写真クリック:', photo)
+                                console.log('👤 セッション:', session)
                                 setSelectedPhoto(photo)
                                 setSelectedSession(session)
                               }}
