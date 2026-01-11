@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+  background-attachment: fixed;
+  color: #e0e0e0;
+}
+
+/* 近未来的グラデーション */
+.cyber-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.cyber-gradient-cyan {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066ff 100%);
+}
+
+.cyber-gradient-pink {
+  background: linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%);
+}
+
+.cyber-gradient-green {
+  background: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+}
+
+/* ネオンボーダーエフェクト */
+.neon-border {
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.5),
+              0 0 20px rgba(102, 126, 234, 0.3),
+              0 0 30px rgba(102, 126, 234, 0.1);
+  border: 2px solid rgba(102, 126, 234, 0.5);
+}
+
+.neon-border-cyan {
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.6),
+              0 0 20px rgba(0, 212, 255, 0.4),
+              0 0 30px rgba(0, 212, 255, 0.2);
+  border: 2px solid rgba(0, 212, 255, 0.6);
+}
+
+.neon-border-pink {
+  box-shadow: 0 0 10px rgba(255, 0, 110, 0.6),
+              0 0 20px rgba(255, 0, 110, 0.4),
+              0 0 30px rgba(255, 0, 110, 0.2);
+  border: 2px solid rgba(255, 0, 110, 0.6);
+}
+
+.neon-border-green {
+  box-shadow: 0 0 10px rgba(0, 245, 160, 0.6),
+              0 0 20px rgba(0, 245, 160, 0.4),
+              0 0 30px rgba(0, 245, 160, 0.2);
+  border: 2px solid rgba(0, 245, 160, 0.6);
+}
+
+/* ネオンテキストエフェクト */
+.neon-text {
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.8),
+               0 0 20px rgba(102, 126, 234, 0.6),
+               0 0 30px rgba(102, 126, 234, 0.4);
+}
+
+.neon-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.8),
+               0 0 20px rgba(0, 212, 255, 0.6),
+               0 0 30px rgba(0, 212, 255, 0.4);
+  color: #00d4ff;
+}
+
+.neon-text-pink {
+  text-shadow: 0 0 10px rgba(255, 0, 110, 0.8),
+               0 0 20px rgba(255, 0, 110, 0.6),
+               0 0 30px rgba(255, 0, 110, 0.4);
+  color: #ff006e;
+}
+
+.neon-text-green {
+  text-shadow: 0 0 10px rgba(0, 245, 160, 0.8),
+               0 0 20px rgba(0, 245, 160, 0.6),
+               0 0 30px rgba(0, 245, 160, 0.4);
+  color: #00f5a0;
+}
+
+/* ガラスモーフィズム */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-morphism-dark {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* スキャンラインエフェクト */
+.scanline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 212, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* グリッチエフェクト */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-anim 2s infinite;
+  color: #00d4ff;
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-anim 3s infinite reverse;
+  color: #ff006e;
+  z-index: -2;
+}
+
+@keyframes glitch-anim {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* ホログラムエフェクト */
+.hologram {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(0, 212, 255, 0.1) 50%,
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: hologram 3s ease infinite;
+}
+
+@keyframes hologram {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* パルスアニメーション */
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.5),
+                0 0 10px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.8),
+                0 0 30px rgba(102, 126, 234, 0.6),
+                0 0 40px rgba(102, 126, 234, 0.4);
+  }
+}
+
+/* ヘキサゴンパターン背景 */
+.hex-pattern {
+  background-image: 
+    linear-gradient(30deg, rgba(102, 126, 234, 0.05) 12%, transparent 12.5%, transparent 87%, rgba(102, 126, 234, 0.05) 87.5%, rgba(102, 126, 234, 0.05)),
+    linear-gradient(150deg, rgba(102, 126, 234, 0.05) 12%, transparent 12.5%, transparent 87%, rgba(102, 126, 234, 0.05) 87.5%, rgba(102, 126, 234, 0.05)),
+    linear-gradient(30deg, rgba(102, 126, 234, 0.05) 12%, transparent 12.5%, transparent 87%, rgba(102, 126, 234, 0.05) 87.5%, rgba(102, 126, 234, 0.05)),
+    linear-gradient(150deg, rgba(102, 126, 234, 0.05) 12%, transparent 12.5%, transparent 87%, rgba(102, 126, 234, 0.05) 87.5%, rgba(102, 126, 234, 0.05));
+  background-size: 80px 140px;
+  background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+}
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* 入力フィールドのスタイル */
+input, textarea {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 2px solid rgba(102, 126, 234, 0.3) !important;
+  color: #e0e0e0 !important;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  border-color: rgba(102, 126, 234, 0.8) !important;
+  box-shadow: 0 0 15px rgba(102, 126, 234, 0.5) !important;
+  outline: none !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(224, 224, 224, 0.4) !important;
+}
