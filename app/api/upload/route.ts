@@ -1,9 +1,6 @@
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseClient } from '@/lib/supabase'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,16 +24,6 @@ export async function POST(request: NextRequest) {
     const base64Data = image.replace(/^data:image\/png;base64,/, '')
     const filename = `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.png`
     
-    // アップロードディレクトリを確保
-    const uploadDir = join(process.cwd(), 'public', 'uploads')
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true })
-    }
-
-    // ローカルファイルに保存
-    const localPath = join(uploadDir, filename)
-    await writeFile(localPath, base64Data, 'base64')
-
     const supabase = getSupabaseClient()
 
     // Supabase Storageにアップロード
@@ -50,6 +37,10 @@ export async function POST(request: NextRequest) {
 
     if (storageError) {
       console.error('Supabase Storage アップロードエラー:', storageError)
+      return NextResponse.json(
+        { error: 'ストレージへのアップロードに失敗しました。', details: storageError.message },
+        { status: 500 }
+      )
     }
 
     // Supabase Storageの公開URLを取得
@@ -66,7 +57,7 @@ export async function POST(request: NextRequest) {
         {
           session_id: session_id,
           filename: filename,
-          filepath: `/uploads/${filename}`,
+          filepath: publicUrl, // 公開URLを使用
           storage_url: publicUrl,
           timestamp: new Date().toISOString()
         }
