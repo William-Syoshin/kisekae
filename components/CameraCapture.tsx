@@ -35,6 +35,10 @@ export default function CameraCapture() {
   // ギャラリー
   const [photos, setPhotos] = useState<Photo[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
+  
+  // モーダル表示用
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null)
 
   // メッセージを表示
   const showMessage = (text: string, type: 'success' | 'error' | 'info' = 'info') => {
@@ -981,39 +985,49 @@ Do not include any accessories, people, text, or decorations.`
 
                 {photos.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {photos.map((photo) => (
-                      <div key={photo.id} className="glass-morphism rounded-xl overflow-hidden neon-border hover:scale-105 transition-transform">
-                        <div className="aspect-video bg-black relative overflow-hidden">
-                          {photo.vton_result_url ? (
-                            <img 
-                              src={photo.vton_result_url} 
-                              alt="VTON結果"
-                              className="w-full h-full object-contain"
-                            />
-                          ) : photo.storage_url ? (
-                            <img 
-                              src={photo.storage_url} 
-                              alt="撮影画像"
-                              className="w-full h-full object-contain"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-500">
-                              画像なし
-                            </div>
-                          )}
+                    {photos.map((photo) => {
+                      const photoSession = sessions.find(s => s.id === photo.session_id)
+                      return (
+                        <div 
+                          key={photo.id} 
+                          className="glass-morphism rounded-xl overflow-hidden neon-border hover:scale-105 transition-transform cursor-pointer"
+                          onClick={() => {
+                            setSelectedPhoto(photo)
+                            setSelectedSession(photoSession || null)
+                          }}
+                        >
+                          <div className="aspect-video bg-black relative overflow-hidden">
+                            {photo.vton_result_url ? (
+                              <img 
+                                src={photo.vton_result_url} 
+                                alt="VTON結果"
+                                className="w-full h-full object-contain"
+                              />
+                            ) : photo.storage_url ? (
+                              <img 
+                                src={photo.storage_url} 
+                                alt="撮影画像"
+                                className="w-full h-full object-contain"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                画像なし
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-4">
+                            <p className="text-xs text-cyan-300 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                              {new Date(photo.timestamp).toLocaleString('ja-JP')}
+                            </p>
+                            {photo.vton_result_url && (
+                              <span className="inline-block px-2 py-1 bg-pink-500 text-white text-xs rounded-full">
+                                👔 着せ替え済み
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="p-4">
-                          <p className="text-xs text-cyan-300 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
-                            {new Date(photo.timestamp).toLocaleString('ja-JP')}
-                          </p>
-                          {photo.vton_result_url && (
-                            <span className="inline-block px-2 py-1 bg-pink-500 text-white text-xs rounded-full">
-                              👔 着せ替え済み
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-12">
@@ -1089,13 +1103,14 @@ Do not include any accessories, people, text, or decorations.`
                           {sessionPhotos.map((photo: any) => (
                             <div
                               key={photo.id}
-                              className="rounded-xl overflow-hidden neon-border-cyan transition-transform hover:scale-105 bg-black"
+                              className="rounded-xl overflow-hidden neon-border-cyan transition-transform hover:scale-105 bg-black cursor-pointer"
+                              onClick={() => {
+                                setSelectedPhoto(photo)
+                                setSelectedSession(session)
+                              }}
                             >
                               {/* VTON結果があればそれを表示、なければ撮影画像 */}
-                              <div
-                                className="w-full h-48 cursor-pointer"
-                                onClick={() => window.open(photo.vton_result_url || photo.storage_url || photo.filepath, '_blank')}
-                              >
+                              <div className="w-full h-48">
                                 <img
                                   src={photo.vton_result_url || photo.storage_url || photo.filepath}
                                   alt={photo.filename}
@@ -1128,6 +1143,117 @@ Do not include any accessories, people, text, or decorations.`
           )}
         </main>
       </div>
+
+      {/* モーダル: 写真詳細 */}
+      {selectedPhoto && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+          onClick={() => {
+            setSelectedPhoto(null)
+            setSelectedSession(null)
+          }}
+        >
+          <div 
+            className="glass-morphism-dark rounded-2xl neon-border p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="scanline"></div>
+            
+            {/* 閉じるボタン */}
+            <button
+              onClick={() => {
+                setSelectedPhoto(null)
+                setSelectedSession(null)
+              }}
+              className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 rounded-full text-white text-2xl font-bold shadow-lg transition-all"
+            >
+              ×
+            </button>
+
+            {/* セッション情報 */}
+            {selectedSession && (
+              <div className="mb-6 relative z-10">
+                <h3 className="text-2xl font-bold neon-text-cyan mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                  👤 {selectedSession.nickname}
+                </h3>
+                <p className="text-cyan-200 text-lg" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  👔 {selectedSession.clothing_prompt}
+                </p>
+                <p className="text-sm text-cyan-400 mt-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  📅 {new Date(selectedPhoto.timestamp).toLocaleString('ja-JP')}
+                </p>
+              </div>
+            )}
+
+            {/* 画像グリッド */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+              {/* AI生成画像 */}
+              {selectedSession?.generated_image_url && (
+                <div className="glass-morphism rounded-xl overflow-hidden neon-border-cyan">
+                  <div className="p-4 bg-gradient-to-r from-purple-900/50 to-pink-900/50">
+                    <h4 className="text-lg font-bold neon-text text-center" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                      🎨 AI生成服装
+                    </h4>
+                  </div>
+                  <div className="p-4 bg-black">
+                    <img
+                      src={selectedSession.generated_image_url}
+                      alt="AI生成服装"
+                      className="w-full h-auto object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => window.open(selectedSession.generated_image_url!, '_blank')}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* 撮影画像 */}
+              {selectedPhoto.storage_url && (
+                <div className="glass-morphism rounded-xl overflow-hidden neon-border-cyan">
+                  <div className="p-4 bg-gradient-to-r from-cyan-900/50 to-blue-900/50">
+                    <h4 className="text-lg font-bold neon-text-cyan text-center" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                      📸 撮影画像
+                    </h4>
+                  </div>
+                  <div className="p-4 bg-black">
+                    <img
+                      src={selectedPhoto.storage_url}
+                      alt="撮影画像"
+                      className="w-full h-auto object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => window.open(selectedPhoto.storage_url!, '_blank')}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* VTON結果 */}
+              {selectedPhoto.vton_result_url && (
+                <div className="glass-morphism rounded-xl overflow-hidden neon-border-cyan">
+                  <div className="p-4 bg-gradient-to-r from-pink-900/50 to-purple-900/50">
+                    <h4 className="text-lg font-bold neon-text text-center" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                      👔 着せ替え結果
+                    </h4>
+                  </div>
+                  <div className="p-4 bg-black">
+                    <img
+                      src={selectedPhoto.vton_result_url}
+                      alt="着せ替え結果"
+                      className="w-full h-auto object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => window.open(selectedPhoto.vton_result_url!, '_blank')}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 画像がない場合の説明 */}
+            {!selectedSession?.generated_image_url && !selectedPhoto.storage_url && !selectedPhoto.vton_result_url && (
+              <div className="text-center py-12 relative z-10">
+                <p className="text-xl text-gray-400">画像がありません</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
