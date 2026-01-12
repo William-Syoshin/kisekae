@@ -9,3 +9,4 @@ COMMENT ON COLUMN sessions.generated_image_url IS 'Difyで生成された服装�
 SELECT 'generated_image_url列を追加しました' as status;
 
 
+

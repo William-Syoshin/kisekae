@@ -37,3 +37,4 @@ COMMENT ON TABLE photos IS '撮影された写真';
 COMMENT ON COLUMN photos.session_id IS 'セッションID（外部キー）';
 
 
+
